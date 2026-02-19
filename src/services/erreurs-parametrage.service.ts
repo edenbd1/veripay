@@ -98,6 +98,17 @@ function extraireTauxEmploi(bulletin: BulletinExtrait): number {
   return b.elementsSalaire.find((e) => e.code === "00035")?.montant ?? 100;
 }
 
+/** Ratio heures travaillées / heures standard (pour proratisation absences) */
+function extraireRatioHeures(bulletin: BulletinExtrait): number {
+  if (bulletin.type !== "detaille") return 1;
+  const b = bulletin as BulletinDetaille;
+  const heures = b.cumuls?.heures;
+  const tauxEmploi = extraireTauxEmploi(bulletin) / 100;
+  const heuresStandard = 151.67 * tauxEmploi;
+  if (!heures || heures >= heuresStandard - 0.01) return 1;
+  return heures / heuresStandard;
+}
+
 const CODES_T1 = new Set([
   "20200", "30005", "30002", "30405", "30402",
   "46000", "46350", "46500", "46550", "51005", "51000",
@@ -112,6 +123,27 @@ function extrairePmssUtilise(bulletin: BulletinExtrait): number | undefined {
     if (cot.base < b.brutCotisation - 0.01) return cot.base;
   }
   return undefined;
+}
+
+/**
+ * Vérifie si un PMSS détecté correspond à la valeur erronée (3925) plutôt qu'à
+ * un prorata légitime de la valeur correcte (4005).
+ * Retourne true si c'est l'erreur TIAFM.
+ */
+function estPmssErrone(pmssDetecte: number, bulletin: BulletinExtrait): boolean {
+  const pmssAttendu = PARAMS_ATTENDUS.pmss;
+  const pmssErrone = ERREURS_CONNUES.TIAFM.valeurErronee;
+  const ratioHeures = extraireRatioHeures(bulletin);
+  const tauxEmploi = extraireTauxEmploi(bulletin) / 100;
+  const ratio = tauxEmploi * ratioHeures;
+
+  // Comparer la distance au PMSS attendu (proraté) vs erroné (proraté)
+  const distAttendu = Math.abs(pmssDetecte - pmssAttendu * ratio);
+  const distErrone = Math.abs(pmssDetecte - pmssErrone * ratio);
+
+  // Flag TIAFM seulement si le PMSS est nettement plus proche de la valeur erronée
+  // et que la distance à la valeur erronée est petite (< 2€)
+  return distErrone < 2 && distErrone < distAttendu;
 }
 
 function extraireMontantRGDU(bulletin: BulletinExtrait): number {
@@ -148,10 +180,10 @@ function detecterErreursSurBulletin(
 
   /* ── TIAFM : Plafond SS ── */
   const pmssDetecte = extrairePmssUtilise(bulletin);
-  if (pmssDetecte !== undefined && Math.abs(pmssDetecte - PARAMS_ATTENDUS.pmss) > 0.01) {
+  if (pmssDetecte !== undefined && estPmssErrone(pmssDetecte, bulletin)) {
     erreursGlobales.add("TIAFM");
     erreurs.push({ type: "TIAFM", message: MESSAGES.TIAFM });
-  } else if (erreursGlobales.has("TIAFM") && bulletin.brutCotisation > ERREURS_CONNUES.TIAFM.valeurErronee + 0.01) {
+  } else if (erreursGlobales.has("TIAFM") && pmssDetecte !== undefined && estPmssErrone(pmssDetecte, bulletin)) {
     erreurs.push({ type: "TIAFM", message: MESSAGES.TIAFM });
   }
 
@@ -159,8 +191,9 @@ function detecterErreursSurBulletin(
   const montantRGDU = extraireMontantRGDU(bulletin);
   if (montantRGDU > 0) {
     const tauxEmploi = extraireTauxEmploi(bulletin) / 100;
-    const smicProrate = PARAMS_ATTENDUS.smicMensuel * tauxEmploi;
-    const smicProrateErr = ERREURS_CONNUES.AAICO.valeurErronee * tauxEmploi;
+    const ratioHeures = extraireRatioHeures(bulletin);
+    const smicProrate = PARAMS_ATTENDUS.smicMensuel * tauxEmploi * ratioHeures;
+    const smicProrateErr = ERREURS_CONNUES.AAICO.valeurErronee * tauxEmploi * ratioHeures;
 
     const rgduCorrecte = calculerMontantRGDU(bulletin.brutCotisation, smicProrate, PARAMS_ATTENDUS.rgduTDelta);
     const rgduSmicErr = calculerMontantRGDU(bulletin.brutCotisation, smicProrateErr, PARAMS_ATTENDUS.rgduTDelta);
@@ -213,19 +246,39 @@ export function analyserBulletins(
   // qui ne peuvent pas les détecter directement mais qui en subissent l'impact.
   const erreursParBulletin = bulletins.map((b) => detecterErreursSurBulletin(b, erreursGlobales));
 
-  // Seconde passe : propager les erreurs globales RGDU aux bulletins qui ont une RGDU
-  // mais dont la différence était trop faible pour la détecter seuls.
+  // Seconde passe : propager les erreurs globales aux bulletins qui ne peuvent pas
+  // les détecter individuellement mais qui en subissent l'impact.
+  // On ne propage que si au moins 2 bulletins ont détecté l'erreur indépendamment.
+  const countRGDUB = erreursParBulletin.filter((e) => e.some((x) => x.type === "RGDUB")).length;
+  const countAAICO = erreursParBulletin.filter((e) => e.some((x) => x.type === "AAICO")).length;
+
   for (let i = 0; i < bulletins.length; i++) {
     const bulletin = bulletins[i];
     const erreurs = erreursParBulletin[i];
     const montantRGDU = extraireMontantRGDU(bulletin);
     if (montantRGDU <= 0) continue;
 
-    if (erreursGlobales.has("AAICO") && !erreurs.some((e) => e.type === "AAICO")) {
+    if (erreursGlobales.has("AAICO") && countAAICO >= 2 && !erreurs.some((e) => e.type === "AAICO")) {
       erreurs.push({ type: "AAICO", message: MESSAGES.AAICO });
     }
-    if (erreursGlobales.has("RGDUB") && !erreurs.some((e) => e.type === "RGDUB")) {
+    if (erreursGlobales.has("RGDUB") && countRGDUB >= 2 && !erreurs.some((e) => e.type === "RGDUB")) {
       erreurs.push({ type: "RGDUB", message: MESSAGES.RGDUB });
+    }
+  }
+
+  // Propager TIAFM aux bulletins à haut salaire seulement si au moins 2 bulletins l'ont détecté
+  const countTIAFM = erreursParBulletin.filter((e) => e.some((x) => x.type === "TIAFM")).length;
+  if (erreursGlobales.has("TIAFM") && countTIAFM >= 2) {
+    for (let i = 0; i < bulletins.length; i++) {
+      const erreurs = erreursParBulletin[i];
+      if (erreurs.some((e) => e.type === "TIAFM")) continue;
+      if (bulletins[i].brutCotisation > ERREURS_CONNUES.TIAFM.valeurErronee + 0.01) {
+        const pmss = extrairePmssUtilise(bulletins[i]);
+        // Ne propager que si ce bulletin a aussi un PMSS détectable et erroné
+        if (pmss !== undefined && estPmssErrone(pmss, bulletins[i])) {
+          erreurs.push({ type: "TIAFM", message: MESSAGES.TIAFM });
+        }
+      }
     }
   }
 
