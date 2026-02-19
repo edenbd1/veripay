@@ -1,6 +1,6 @@
 import type { SamplePDF, ErrorInfoEntry } from "./types";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+export const API_URL = "/api";
 
 export const SAMPLE_PDFS: SamplePDF[] = [
   { name: "bulletin_1_sans_erreur_detaille.pdf", label: "1 bulletin sans erreur", hasErrors: false },
