@@ -15,6 +15,7 @@ app.get("/", (_req, res) => {
     endpoints: {
       "POST /bulletins/upload": "Envoi d'un PDF de bulletin(s) -> extraction JSON",
       "POST /bulletins/verifier": "Vérification d'un bulletin JSON -> erreurs éventuelles",
+      "POST /bulletins/chat": "Chat IA pour expliquer les erreurs de paramétrage (SSE streaming)",
       "GET /bulletins/sante": "Santé de l'API",
     },
   });

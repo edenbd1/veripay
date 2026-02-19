@@ -6,6 +6,7 @@ import { Router, type Request, type Response } from "express";
 import multer from "multer";
 import { z } from "zod";
 import { extraireBulletinsDepuisPdf, analyserBulletinsPdf } from "../services/bulletin.service.js";
+import { streamChatResponse } from "../services/chat.service.js";
 import { verifierBulletin } from "../services/verification.service.js";
 
 const router = Router();
@@ -106,6 +107,43 @@ router.post("/verifier", (req: Request, res: Response) => {
     res.status(500).json({
       erreur: err instanceof Error ? err.message : "Erreur lors de la vérification",
     });
+  }
+});
+
+/**
+ * POST /bulletins/chat
+ * Body: { errorType, message, history[], bulletinContext? }
+ * Réponse: text/event-stream (SSE)
+ */
+const bodyChat = z.object({
+  errorType: z.string().min(1),
+  message: z.string().min(1),
+  history: z.array(z.object({
+    role: z.enum(["user", "assistant", "system"]),
+    content: z.string(),
+  })).default([]),
+  bulletinContext: z.object({
+    salarie: z.string().optional(),
+    periode: z.string().optional(),
+    brut: z.number().optional(),
+  }).optional(),
+});
+
+router.post("/chat", async (req: Request, res: Response) => {
+  try {
+    const parsed = bodyChat.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ erreur: "Body invalide", details: parsed.error.flatten() });
+      return;
+    }
+    await streamChatResponse(parsed.data, res);
+  } catch (err) {
+    console.error(err);
+    if (!res.headersSent) {
+      res.status(500).json({
+        erreur: err instanceof Error ? err.message : "Erreur lors du chat",
+      });
+    }
   }
 });
 

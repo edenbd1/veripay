@@ -27,3 +27,19 @@ export interface ErrorInfoEntry {
   description: string;
   color: string;
 }
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatRequest {
+  errorType: string;
+  message: string;
+  history: ChatMessage[];
+  bulletinContext?: {
+    salarie?: string;
+    periode?: string;
+    brut?: number;
+  };
+}

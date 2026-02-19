@@ -6,11 +6,11 @@ import { DocSection } from "@/components/documentation/DocSection";
 import { APIEndpoint } from "@/components/documentation/APIEndpoint";
 
 const TOC = [
-  { id: "presentation", label: "Présentation" },
-  { id: "erreurs", label: "Erreurs détectées" },
+  { id: "presentation", label: "Presentation" },
+  { id: "erreurs", label: "Erreurs detectees" },
   { id: "fonctionnement", label: "Fonctionnement" },
   { id: "api", label: "API Endpoints" },
-  { id: "formats", label: "Formats supportés" },
+  { id: "formats", label: "Formats supportes" },
 ];
 
 export default function DocumentationPage() {
@@ -37,9 +37,9 @@ export default function DocumentationPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-10">
-      <div className="animate-fade-in-up mb-10">
-        <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Documentation</h1>
+    <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="animate-fade-in-up mb-12">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Documentation</h1>
         <p className="mt-2 text-sm text-muted">Tout ce que vous devez savoir sur VeriPay.</p>
       </div>
 
@@ -52,10 +52,10 @@ export default function DocumentationPage() {
                 key={item.id}
                 href={`#${item.id}`}
                 className={cn(
-                  "block rounded-lg px-3 py-1.5 text-sm transition-all duration-150",
+                  "block rounded-full px-4 py-1.5 text-sm transition-all duration-150",
                   activeSection === item.id
-                    ? "bg-surface font-medium text-foreground shadow-sm"
-                    : "text-muted hover:text-foreground hover:bg-surface-hover"
+                    ? "bg-foreground font-medium text-background"
+                    : "text-muted hover:text-foreground"
                 )}
               >
                 {item.label}
@@ -68,34 +68,34 @@ export default function DocumentationPage() {
         <div className="space-y-10">
           <DocSection id="presentation" title="Qu'est-ce que VeriPay ?">
             <p className="text-sm leading-relaxed text-muted">
-              VeriPay est un outil de vérification automatique des bulletins de paie
-              français. Il analyse les PDF de bulletins de salaire émis sous la{" "}
+              VeriPay est un outil de verification automatique des bulletins de paie
+              francais. Il analyse les PDF de bulletins de salaire emis sous la{" "}
               <strong className="text-foreground">Convention collective du 15 mars 1966 (CCNT 66)</strong> et
-              détecte les erreurs de paramétrage courantes dans les logiciels de paie.
+              detecte les erreurs de parametrage courantes dans les logiciels de paie.
             </p>
           </DocSection>
 
-          <DocSection id="erreurs" title="Erreurs détectées">
+          <DocSection id="erreurs" title="Erreurs detectees">
             <div className="space-y-4">
-              <div className="rounded-lg bg-slate-50 p-4 dark:bg-zinc-800/50">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="rounded bg-amber-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
                     TIAFM
                   </span>
                   <span className="text-xs font-medium text-foreground">
-                    Plafond de Sécurité sociale (PMSS)
+                    Plafond de Securite sociale (PMSS)
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-muted">
-                  Détecte quand le PMSS est resté à la valeur 2025 (<strong>3 925 €</strong>) au lieu
-                  d&apos;être mis à jour à <strong>4 005 €</strong> pour 2026. Cette erreur impacte
-                  toutes les cotisations plafonnées (Vieillesse TA, Retraite T1, Prévoyance, etc.).
+                  Detecte quand le PMSS est reste a la valeur 2025 (<strong className="text-foreground">3 925 &euro;</strong>) au lieu
+                  d&apos;etre mis a jour a <strong className="text-foreground">4 005 &euro;</strong> pour 2026. Cette erreur impacte
+                  toutes les cotisations plafonnees (Vieillesse TA, Retraite T1, Prevoyance, etc.).
                 </p>
               </div>
 
-              <div className="rounded-lg bg-slate-50 p-4 dark:bg-zinc-800/50">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="rounded bg-orange-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
                     AAICO
                   </span>
                   <span className="text-xs font-medium text-foreground">
@@ -103,14 +103,14 @@ export default function DocumentationPage() {
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-muted">
-                  Détecte une erreur de saisie sur le SMIC mensuel 151,67 h : <strong>1 832,03 €</strong> (erroné)
-                  au lieu de <strong>1 823,03 €</strong> (correct). Impact sur le calcul de la RGDU.
+                  Detecte une erreur de saisie sur le SMIC mensuel 151,67 h : <strong className="text-foreground">1 832,03 &euro;</strong> (errone)
+                  au lieu de <strong className="text-foreground">1 823,03 &euro;</strong> (correct). Impact sur le calcul de la RGDU.
                 </p>
               </div>
 
-              <div className="rounded-lg bg-slate-50 p-4 dark:bg-zinc-800/50">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="rounded bg-red-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-red-700 dark:bg-red-900/30 dark:text-red-400">
+              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+                <div className="mb-2 flex items-center gap-2">
+                  <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
                     RGDUB
                   </span>
                   <span className="text-xs font-medium text-foreground">
@@ -118,10 +118,10 @@ export default function DocumentationPage() {
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-muted">
-                  Détecte un coefficient T delta mal paramétré dans le calcul de la Réduction Générale
-                  des Cotisations (RGDU) : <strong>0,3241</strong> (erroné) au lieu de{" "}
-                  <strong>0,3821</strong> (correct 2026). La formule RGDU est :{" "}
-                  <code className="rounded bg-slate-200 px-1 py-0.5 text-[10px] dark:bg-zinc-700">
+                  Detecte un coefficient T delta mal parametre dans le calcul de la Reduction Generale
+                  des Cotisations (RGDU) : <strong className="text-foreground">0,3241</strong> (errone) au lieu de{" "}
+                  <strong className="text-foreground">0,3821</strong> (correct 2026). La formule RGDU est :{" "}
+                  <code className="rounded bg-foreground/[0.06] px-1.5 py-0.5 text-[10px] dark:bg-foreground/10">
                     C = T_min + T_delta x [(1/2) x (3 x SMIC / brut - 1)]^P
                   </code>
                 </p>
@@ -132,13 +132,13 @@ export default function DocumentationPage() {
           <DocSection id="fonctionnement" title="Comment fonctionne l'analyse ?">
             <ol className="space-y-3 text-sm text-muted">
               {[
-                { step: "1", title: "Extraction", desc: "Le texte du PDF est extrait et les bulletins individuels sont identifiés." },
-                { step: "2", title: "Parsing", desc: "Chaque bulletin est parsé en structure JSON (employeur, salarié, cotisations, etc.)." },
-                { step: "3", title: "Détection", desc: "Les paramètres (PMSS, SMIC, coeff. RGDU) sont comparés aux valeurs 2026 attendues." },
-                { step: "4", title: "Résultat", desc: "Chaque bulletin reçoit un statut valide/invalide avec les erreurs détaillées." },
+                { step: "01", title: "Extraction", desc: "Le texte du PDF est extrait et les bulletins individuels sont identifies." },
+                { step: "02", title: "Parsing", desc: "Chaque bulletin est parse en structure JSON (employeur, salarie, cotisations, etc.)." },
+                { step: "03", title: "Detection", desc: "Les parametres (PMSS, SMIC, coeff. RGDU) sont compares aux valeurs 2026 attendues." },
+                { step: "04", title: "Resultat", desc: "Chaque bulletin recoit un statut valide/invalide avec les erreurs detaillees." },
               ].map((item) => (
                 <li key={item.step} className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-[11px] font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-[10px] font-bold text-background">
                     {item.step}
                   </span>
                   <span>
@@ -154,17 +154,22 @@ export default function DocumentationPage() {
               <APIEndpoint
                 method="POST"
                 path="/bulletins/analyser"
-                description="Upload un PDF → retourne les erreurs de paramétrage par bulletin. Body : multipart/form-data, champ pdf."
+                description="Upload un PDF -> retourne les erreurs de parametrage par bulletin. Body : multipart/form-data, champ pdf."
               />
               <APIEndpoint
                 method="POST"
                 path="/bulletins/upload"
-                description="Upload un PDF → retourne les bulletins parsés en JSON avec vérification complète."
+                description="Upload un PDF -> retourne les bulletins parses en JSON avec verification complete."
               />
               <APIEndpoint
                 method="POST"
                 path="/bulletins/verifier"
-                description="Vérifie un bulletin JSON déjà extrait. Body : { bulletin: {...} }."
+                description="Verifie un bulletin JSON deja extrait. Body : { bulletin: {...} }."
+              />
+              <APIEndpoint
+                method="POST"
+                path="/bulletins/chat"
+                description="Chat IA pour expliquer les erreurs de parametrage. Body : { errorType, message, history[] }. Reponse en SSE streaming."
               />
               <APIEndpoint
                 method="GET"
@@ -174,23 +179,23 @@ export default function DocumentationPage() {
             </div>
           </DocSection>
 
-          <DocSection id="formats" title="Formats de bulletins supportés">
+          <DocSection id="formats" title="Formats de bulletins supportes">
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-lg bg-slate-50 p-3 dark:bg-zinc-800/50">
-                <p className="text-xs font-medium text-foreground">Bulletin détaillé</p>
-                <p className="mt-0.5 text-[11px] text-muted">
-                  Chaque cotisation sur une ligne avec code (20000, 20200, etc.), base, taux, et montants salarié/patronal.
+              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+                <p className="text-xs font-medium text-foreground">Bulletin detaille</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-muted">
+                  Chaque cotisation sur une ligne avec code (20000, 20200, etc.), base, taux, et montants salarie/patronal.
                 </p>
               </div>
-              <div className="rounded-lg bg-slate-50 p-3 dark:bg-zinc-800/50">
-                <p className="text-xs font-medium text-foreground">Bulletin clarifié</p>
-                <p className="mt-0.5 text-[11px] text-muted">
-                  Cotisations regroupées par catégorie (Santé, Retraite, Famille, Chômage, Impôt sur le revenu).
+              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+                <p className="text-xs font-medium text-foreground">Bulletin clarifie</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-muted">
+                  Cotisations regroupees par categorie (Sante, Retraite, Famille, Chomage, Impot sur le revenu).
                 </p>
               </div>
             </div>
             <p className="mt-3 text-[11px] text-muted-foreground">
-              Le type est détecté automatiquement. Un PDF peut contenir plusieurs bulletins qui seront analysés individuellement.
+              Le type est detecte automatiquement. Un PDF peut contenir plusieurs bulletins qui seront analyses individuellement.
             </p>
           </DocSection>
         </div>

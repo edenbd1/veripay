@@ -9,7 +9,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-sm shadow-emerald-600/20",
+    "bg-foreground text-background hover:opacity-90 active:opacity-80",
   secondary:
     "bg-surface text-foreground border border-border hover:border-border-hover hover:bg-surface-hover",
   ghost:
@@ -20,8 +20,8 @@ export function Button({ variant = "primary", className, children, ...props }: B
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-150",
-        "hover:scale-[1.01] active:scale-[0.98]",
+        "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-150",
+        "active:scale-[0.98]",
         "disabled:pointer-events-none disabled:opacity-40",
         variants[variant],
         className

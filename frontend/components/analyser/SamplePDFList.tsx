@@ -1,5 +1,4 @@
 import { SAMPLE_PDFS } from "@/lib/constants";
-import { cn } from "@/lib/cn";
 
 interface SamplePDFListProps {
   loading: boolean;
@@ -21,16 +20,9 @@ export function SamplePDFList({ loading, onSelect }: SamplePDFListProps) {
             key={s.name}
             onClick={() => onSelect(s.name)}
             disabled={loading}
-            className="flex w-full items-center gap-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-left transition-all duration-150 hover:border-border-hover hover:shadow-sm hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+            className="flex w-full items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3 text-left transition-all duration-150 hover:border-border-hover active:scale-[0.99] disabled:opacity-50"
           >
-            <div
-              className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold",
-                s.hasErrors
-                  ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-                  : "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
-              )}
-            >
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-foreground/5 font-mono text-[10px] font-bold text-foreground dark:bg-foreground/10">
               PDF
             </div>
             <div className="min-w-0 flex-1">
@@ -41,14 +33,7 @@ export function SamplePDFList({ loading, onSelect }: SamplePDFListProps) {
                 {s.name}
               </p>
             </div>
-            <span
-              className={cn(
-                "shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-medium",
-                s.hasErrors
-                  ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                  : "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
-              )}
-            >
+            <span className="shrink-0 rounded-full bg-foreground/5 px-2.5 py-0.5 text-[10px] font-medium text-muted dark:bg-foreground/10">
               {s.hasErrors ? "Erreurs" : "Valide"}
             </span>
           </button>

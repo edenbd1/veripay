@@ -13,10 +13,10 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border glass">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80">
-          <Image src="/logo.webp" alt="VeriPay" width={32} height={32} className="rounded-lg" />
+        <Link href="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-70">
+          <Image src="/logo.webp" alt="VeriPay" width={28} height={28} className="rounded-lg" />
           <span className="text-base font-semibold tracking-tight">VeriPay</span>
         </Link>
 
@@ -29,10 +29,10 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150",
+                  "rounded-full px-4 py-1.5 text-sm transition-all duration-150",
                   isActive
-                    ? "bg-surface text-foreground shadow-sm"
-                    : "text-muted hover:text-foreground hover:bg-surface-hover"
+                    ? "bg-foreground text-background font-medium"
+                    : "text-muted hover:text-foreground"
                 )}
               >
                 {link.label}
@@ -44,7 +44,7 @@ export function Navbar() {
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-hover md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-hover md:hidden"
           aria-label="Menu"
         >
           {mobileOpen ? (
@@ -71,10 +71,10 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "rounded-lg px-3 py-2 text-sm transition-colors",
                     isActive
-                      ? "bg-surface text-foreground"
-                      : "text-muted hover:text-foreground hover:bg-surface-hover"
+                      ? "font-medium text-foreground"
+                      : "text-muted hover:text-foreground"
                   )}
                 >
                   {link.label}

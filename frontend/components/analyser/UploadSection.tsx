@@ -30,14 +30,14 @@ export function UploadSection({
   onSampleSelect,
 }: UploadSectionProps) {
   return (
-    <div className="animate-fade-in-up grid gap-8 lg:grid-cols-5">
+    <div className="animate-fade-in-up grid gap-10 lg:grid-cols-5">
       {/* Upload zone */}
       <div className="lg:col-span-3">
-        <h2 className="mb-1 text-xl font-semibold text-foreground">
+        <h2 className="mb-1 text-2xl font-bold tracking-tight text-foreground">
           Analyser un bulletin
         </h2>
-        <p className="mb-6 text-sm text-muted">
-          Uploadez un PDF de bulletin(s) de paie pour détecter les erreurs de paramétrage.
+        <p className="mb-8 text-sm text-muted">
+          Uploadez un PDF de bulletin(s) de paie pour detecter les erreurs de parametrage.
         </p>
 
         <FileDropZone
@@ -50,7 +50,7 @@ export function UploadSection({
         />
 
         {error && (
-          <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/20 dark:text-red-400">
+          <div className="mt-3 rounded-xl border border-foreground/10 bg-foreground/[0.03] px-4 py-2.5 text-xs text-foreground">
             {error}
           </div>
         )}
@@ -58,7 +58,7 @@ export function UploadSection({
         <Button
           onClick={onSubmit}
           disabled={!file || loading}
-          className="mt-4 w-full"
+          className="mt-5 w-full"
         >
           Analyser le bulletin
         </Button>

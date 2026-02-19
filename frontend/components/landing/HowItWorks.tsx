@@ -4,50 +4,43 @@ import { SectionReveal } from "@/components/ui/SectionReveal";
 
 const steps = [
   {
-    number: "1",
+    number: "01",
     title: "Upload",
-    description: "Glissez votre PDF de bulletin(s) de paie ou sélectionnez un fichier.",
+    description: "Glissez votre PDF de bulletin(s) de paie ou selectionnez un fichier.",
   },
   {
-    number: "2",
+    number: "02",
     title: "Extraction",
-    description: "Le texte est extrait et les bulletins individuels sont identifiés automatiquement.",
+    description: "Le texte est extrait et les bulletins individuels sont identifies automatiquement.",
   },
   {
-    number: "3",
+    number: "03",
     title: "Analyse",
-    description: "Les paramètres (PMSS, SMIC, coeff. RGDU) sont comparés aux valeurs 2026 attendues.",
+    description: "Les parametres (PMSS, SMIC, coeff. RGDU) sont compares aux valeurs 2026 attendues.",
   },
   {
-    number: "4",
-    title: "Résultats",
-    description: "Chaque bulletin reçoit un statut valide/invalide avec les erreurs détaillées.",
+    number: "04",
+    title: "Resultats",
+    description: "Chaque bulletin recoit un statut valide/invalide avec les erreurs detaillees.",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section className="border-y border-border bg-surface py-20">
+    <section className="py-24">
       <div className="mx-auto max-w-6xl px-6">
         <SectionReveal>
-          <div className="mb-12 text-center">
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-              Comment ça marche
-            </h2>
-            <p className="mx-auto mt-3 max-w-lg text-sm text-muted">
-              4 étapes automatiques, de l&apos;upload à la détection des erreurs.
-            </p>
-          </div>
+          <p className="mb-12 text-center text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            COMMENT CA MARCHE
+          </p>
         </SectionReveal>
 
         <SectionReveal stagger>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => (
-              <div key={step.number} className="relative text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-lg font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-                  {step.number}
-                </div>
-                <h3 className="mb-2 text-sm font-semibold text-foreground">{step.title}</h3>
+              <div key={step.number} className="bg-surface p-8">
+                <p className="mb-4 font-mono text-xs text-muted-foreground">{step.number}</p>
+                <h3 className="mb-2 text-sm font-bold text-foreground">{step.title}</h3>
                 <p className="text-xs leading-relaxed text-muted">{step.description}</p>
               </div>
             ))}

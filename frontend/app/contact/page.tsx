@@ -13,22 +13,22 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-10">
-      <div className="animate-fade-in-up mb-10 text-center">
-        <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Contact</h1>
+    <div className="mx-auto max-w-2xl px-6 py-12">
+      <div className="animate-fade-in-up mb-12 text-center">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Contact</h1>
         <p className="mt-2 text-sm text-muted">
-          Une question ou un retour ? N&apos;hésitez pas à nous écrire.
+          Une question ou un retour ? N&apos;hesitez pas a nous ecrire.
         </p>
       </div>
 
       {submitted ? (
         <Card className="animate-fade-in-up text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-            <svg className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5 dark:bg-foreground/10">
+            <svg className="h-6 w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-lg font-semibold text-foreground">Message envoyé</h2>
+          <h2 className="text-lg font-bold text-foreground">Message envoye</h2>
           <p className="mt-2 text-sm text-muted">
             Merci pour votre message. Nous reviendrons vers vous rapidement.
           </p>
@@ -51,7 +51,7 @@ export default function ContactPage() {
                 id="name"
                 type="text"
                 required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none"
                 placeholder="Votre nom"
               />
             </div>
@@ -64,7 +64,7 @@ export default function ContactPage() {
                 id="email"
                 type="email"
                 required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none"
                 placeholder="vous@exemple.com"
               />
             </div>
@@ -77,7 +77,7 @@ export default function ContactPage() {
                 id="subject"
                 type="text"
                 required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none"
                 placeholder="Objet de votre message"
               />
             </div>
@@ -90,7 +90,7 @@ export default function ContactPage() {
                 id="message"
                 required
                 rows={5}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 resize-none"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none resize-none"
                 placeholder="Votre message..."
               />
             </div>
