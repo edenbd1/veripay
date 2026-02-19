@@ -1,0 +1,40 @@
+{
+  "name": "veripay-api",
+  "version": "1.0.0",
+  "description": "API de vérification des bulletins de salaire français",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "test:pdf": "bash scripts/test-pdf.sh",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "bulletin",
+    "salaire",
+    "verification",
+    "pdf"
+  ],
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^1.1.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.14.0",
+    "@types/pdf-parse": "^1.1.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0"
+  }
+}
