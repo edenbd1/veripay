@@ -11,7 +11,7 @@ export function Hero() {
         <div className="mx-auto max-w-3xl text-center">
           {/* Logo icon */}
           <div className="animate-fade-in mb-8 inline-flex items-center justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-foreground/5 dark:bg-foreground/10">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
               <Image src="/logo.webp" alt="" width={28} height={28} className="rounded-lg" />
             </div>
           </div>

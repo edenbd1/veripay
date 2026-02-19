@@ -54,7 +54,7 @@ export default function DocumentationPage() {
                 className={cn(
                   "block rounded-full px-4 py-1.5 text-sm transition-all duration-150",
                   activeSection === item.id
-                    ? "bg-foreground font-medium text-background"
+                    ? "bg-white font-medium text-black"
                     : "text-muted hover:text-foreground"
                 )}
               >
@@ -77,9 +77,9 @@ export default function DocumentationPage() {
 
           <DocSection id="erreurs" title="Erreurs detectees">
             <div className="space-y-4">
-              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+              <div className="rounded-xl bg-white/[0.04] p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
+                  <span className="rounded-full bg-white px-2.5 py-0.5 font-mono text-[10px] font-bold text-black">
                     TIAFM
                   </span>
                   <span className="text-xs font-medium text-foreground">
@@ -93,9 +93,9 @@ export default function DocumentationPage() {
                 </p>
               </div>
 
-              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+              <div className="rounded-xl bg-white/[0.04] p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
+                  <span className="rounded-full bg-white px-2.5 py-0.5 font-mono text-[10px] font-bold text-black">
                     AAICO
                   </span>
                   <span className="text-xs font-medium text-foreground">
@@ -108,9 +108,9 @@ export default function DocumentationPage() {
                 </p>
               </div>
 
-              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+              <div className="rounded-xl bg-white/[0.04] p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
+                  <span className="rounded-full bg-white px-2.5 py-0.5 font-mono text-[10px] font-bold text-black">
                     RGDUB
                   </span>
                   <span className="text-xs font-medium text-foreground">
@@ -121,7 +121,7 @@ export default function DocumentationPage() {
                   Detecte un coefficient T delta mal parametre dans le calcul de la Reduction Generale
                   des Cotisations (RGDU) : <strong className="text-foreground">0,3241</strong> (errone) au lieu de{" "}
                   <strong className="text-foreground">0,3821</strong> (correct 2026). La formule RGDU est :{" "}
-                  <code className="rounded bg-foreground/[0.06] px-1.5 py-0.5 text-[10px] dark:bg-foreground/10">
+                  <code className="rounded bg-white/[0.08] px-1.5 py-0.5 text-[10px]">
                     C = T_min + T_delta x [(1/2) x (3 x SMIC / brut - 1)]^P
                   </code>
                 </p>
@@ -138,7 +138,7 @@ export default function DocumentationPage() {
                 { step: "04", title: "Resultat", desc: "Chaque bulletin recoit un statut valide/invalide avec les erreurs detaillees." },
               ].map((item) => (
                 <li key={item.step} className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-[10px] font-bold text-background">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white font-mono text-[10px] font-bold text-black">
                     {item.step}
                   </span>
                   <span>
@@ -181,13 +181,13 @@ export default function DocumentationPage() {
 
           <DocSection id="formats" title="Formats de bulletins supportes">
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+              <div className="rounded-xl bg-white/[0.04] p-4">
                 <p className="text-xs font-medium text-foreground">Bulletin detaille</p>
                 <p className="mt-1 text-[11px] leading-relaxed text-muted">
                   Chaque cotisation sur une ligne avec code (20000, 20200, etc.), base, taux, et montants salarie/patronal.
                 </p>
               </div>
-              <div className="rounded-xl bg-foreground/[0.03] p-4 dark:bg-foreground/[0.05]">
+              <div className="rounded-xl bg-white/[0.04] p-4">
                 <p className="text-xs font-medium text-foreground">Bulletin clarifie</p>
                 <p className="mt-1 text-[11px] leading-relaxed text-muted">
                   Cotisations regroupees par categorie (Sante, Retraite, Famille, Chomage, Impot sur le revenu).

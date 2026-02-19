@@ -15,7 +15,7 @@ export function BulletinList({ bulletins }: BulletinListProps) {
             "rounded-2xl border bg-surface px-5 py-3.5 transition-all",
             b.valide
               ? "border-border"
-              : "border-foreground/15"
+              : "border-white/15"
           )}
         >
           <div className="flex items-center justify-between">
@@ -24,8 +24,8 @@ export function BulletinList({ bulletins }: BulletinListProps) {
                 className={cn(
                   "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
                   b.valide
-                    ? "bg-foreground/5 dark:bg-foreground/10"
-                    : "bg-foreground text-background"
+                    ? "bg-white/10"
+                    : "bg-white text-black"
                 )}
               >
                 {b.valide ? (
@@ -52,7 +52,7 @@ export function BulletinList({ bulletins }: BulletinListProps) {
                 {b.erreurs.map((err, j) => (
                   <span
                     key={j}
-                    className="rounded-full bg-foreground px-2 py-0.5 font-mono text-[10px] font-medium text-background"
+                    className="rounded-full bg-white px-2 py-0.5 font-mono text-[10px] font-medium text-black"
                     title={err.message}
                   >
                     {err.type}

@@ -23,7 +23,7 @@ export default function ContactPage() {
 
       {submitted ? (
         <Card className="animate-fade-in-up text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-foreground/5 dark:bg-foreground/10">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
             <svg className="h-6 w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -51,7 +51,7 @@ export default function ContactPage() {
                 id="name"
                 type="text"
                 required
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-white/30 focus:outline-none"
                 placeholder="Votre nom"
               />
             </div>
@@ -64,7 +64,7 @@ export default function ContactPage() {
                 id="email"
                 type="email"
                 required
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-white/30 focus:outline-none"
                 placeholder="vous@exemple.com"
               />
             </div>
@@ -77,7 +77,7 @@ export default function ContactPage() {
                 id="subject"
                 type="text"
                 required
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-white/30 focus:outline-none"
                 placeholder="Objet de votre message"
               />
             </div>
@@ -90,7 +90,7 @@ export default function ContactPage() {
                 id="message"
                 required
                 rows={5}
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-foreground/30 focus:outline-none resize-none"
+                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-white/30 focus:outline-none resize-none"
                 placeholder="Votre message..."
               />
             </div>
