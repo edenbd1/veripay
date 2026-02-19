@@ -8,6 +8,16 @@ app.use(express.json({ limit: "2mb" }));
 
 app.use("/bulletins", bulletinsRoutes);
 
+app.post("/contact", (req, res) => {
+  const { nom, email, sujet, message } = req.body ?? {};
+  if (!nom || !email || !message) {
+    res.status(400).json({ erreur: "Champs requis : nom, email, message" });
+    return;
+  }
+  console.log(`[CONTACT] De: ${nom} <${email}> | Sujet: ${sujet || "(aucun)"} | Message: ${message}`);
+  res.json({ ok: true });
+});
+
 app.get("/", (_req, res) => {
   res.json({
     name: "VeriPay API",

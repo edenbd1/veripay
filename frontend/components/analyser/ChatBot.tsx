@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/cn";
 import { API_URL, ERROR_INFO } from "@/lib/constants";
-import type { ChatMessage, ChatRequest } from "@/lib/types";
+import type { ChatMessage } from "@/lib/types";
 
 interface ChatBotProps {
   open: boolean;
@@ -16,144 +16,215 @@ interface ChatBotProps {
   };
 }
 
+async function streamChat(
+  errorType: string,
+  message: string,
+  history: ChatMessage[],
+  bulletinContext: ChatBotProps["bulletinContext"],
+  signal: AbortSignal,
+  onChunk: (text: string) => void,
+): Promise<void> {
+  const res = await fetch(`${API_URL}/bulletins/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ errorType, message, history, bulletinContext }),
+    signal,
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    let errMsg = `Erreur ${res.status}`;
+    try {
+      const parsed = JSON.parse(body);
+      if (parsed.erreur) errMsg = parsed.erreur;
+    } catch { /* ignore */ }
+    throw new Error(errMsg);
+  }
+
+  // Try streaming with ReadableStream reader
+  const reader = res.body?.getReader();
+  if (!reader) {
+    // Fallback: read as text
+    const text = await res.text();
+    const lines = text.split("\n");
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || !trimmed.startsWith("data: ")) continue;
+      const payload = trimmed.slice(6);
+      if (payload === "[DONE]") continue;
+      try {
+        const parsed = JSON.parse(payload);
+        if (parsed.content) onChunk(parsed.content);
+      } catch { /* ignore */ }
+    }
+    return;
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || !trimmed.startsWith("data: ")) continue;
+      const payload = trimmed.slice(6);
+      if (payload === "[DONE]") continue;
+      try {
+        const parsed = JSON.parse(payload);
+        if (parsed.content) onChunk(parsed.content);
+      } catch { /* ignore */ }
+    }
+  }
+
+  // Process remaining buffer
+  if (buffer.trim()) {
+    const trimmed = buffer.trim();
+    if (trimmed.startsWith("data: ")) {
+      const payload = trimmed.slice(6);
+      if (payload !== "[DONE]") {
+        try {
+          const parsed = JSON.parse(payload);
+          if (parsed.content) onChunk(parsed.content);
+        } catch { /* ignore */ }
+      }
+    }
+  }
+}
+
 export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const initRef = useRef<string | null>(null);
+  const lastErrorTypeRef = useRef<string | null>(null);
 
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
+  // Scroll to bottom on new messages
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  const sendMessage = useCallback(async (
-    userMessage: string,
-    history: ChatMessage[],
-  ) => {
+  // Auto-explain when opening with a new error type
+  useEffect(() => {
+    if (!open || !errorType) return;
+    if (lastErrorTypeRef.current === errorType) return;
+    lastErrorTypeRef.current = errorType;
+
+    const info = ERROR_INFO[errorType];
+    const label = info?.label ?? errorType;
+    const autoMessage = `Explique-moi l'erreur ${errorType} (${label}) en detail : causes possibles, impact sur le bulletin, et comment la corriger.`;
+
+    const userMsg: ChatMessage = { role: "user", content: autoMessage };
+    setMessages([userMsg]);
+    setError(null);
     setStreaming(true);
-    abortRef.current = new AbortController();
 
-    const body: ChatRequest = {
+    const controller = new AbortController();
+    abortRef.current = controller;
+    let fullContent = "";
+
+    setMessages([userMsg, { role: "assistant", content: "" }]);
+
+    streamChat(
       errorType,
-      message: userMessage,
-      history,
+      autoMessage,
+      [],
       bulletinContext,
-    };
-
-    try {
-      const res = await fetch(`${API_URL}/bulletins/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-        signal: abortRef.current.signal,
+      controller.signal,
+      (chunk) => {
+        fullContent += chunk;
+        const captured = fullContent;
+        setMessages([userMsg, { role: "assistant", content: captured }]);
+      },
+    )
+      .catch((err) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        const errMsg = err instanceof Error ? err.message : "Erreur de connexion";
+        setError(errMsg);
+        if (!fullContent) {
+          setMessages([userMsg, { role: "assistant", content: `Erreur : ${errMsg}` }]);
+        }
+      })
+      .finally(() => {
+        setStreaming(false);
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({ erreur: "Erreur inconnue" }));
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: `Erreur : ${err.erreur || res.statusText}` },
-        ]);
-        setStreaming(false);
-        return;
-      }
+    return () => {
+      controller.abort();
+    };
+  }, [open, errorType, bulletinContext]);
 
-      const reader = res.body?.getReader();
-      if (!reader) {
-        setStreaming(false);
-        return;
-      }
-
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let fullContent = "";
-
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed || !trimmed.startsWith("data: ")) continue;
-
-          const payload = trimmed.slice(6);
-          if (payload === "[DONE]") continue;
-
-          try {
-            const parsed = JSON.parse(payload) as { content?: string };
-            if (parsed.content) {
-              fullContent += parsed.content;
-              const captured = fullContent;
-              setMessages((prev) => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { role: "assistant", content: captured };
-                return updated;
-              });
-            }
-          } catch {
-            // ignore
-          }
-        }
-      }
-    } catch (err) {
-      if (err instanceof DOMException && err.name === "AbortError") return;
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Erreur de connexion au serveur." },
-      ]);
-    } finally {
-      setStreaming(false);
-    }
-  }, [errorType, bulletinContext]);
-
-  useEffect(() => {
-    if (open && errorType && initRef.current !== errorType) {
-      initRef.current = errorType;
-      const info = ERROR_INFO[errorType];
-      const label = info?.label ?? errorType;
-      const autoMessage = `Explique-moi l'erreur ${errorType} (${label}) en detail : causes possibles, impact sur le bulletin, et comment la corriger.`;
-      setMessages([{ role: "user", content: autoMessage }]);
-      sendMessage(autoMessage, []);
-    }
-  }, [open, errorType, sendMessage]);
-
+  // Reset when closed
   useEffect(() => {
     if (!open) {
-      initRef.current = null;
+      lastErrorTypeRef.current = null;
       setMessages([]);
       setInput("");
+      setError(null);
+      setStreaming(false);
       abortRef.current?.abort();
     }
   }, [open]);
 
+  // Focus input when ready
   useEffect(() => {
     if (open && !streaming) {
-      setTimeout(() => inputRef.current?.focus(), 300);
+      const t = setTimeout(() => inputRef.current?.focus(), 300);
+      return () => clearTimeout(t);
     }
   }, [open, streaming]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || streaming) return;
 
-    const newMessages: ChatMessage[] = [...messages, { role: "user", content: trimmed }];
+    const userMsg: ChatMessage = { role: "user", content: trimmed };
+    const history = [...messages];
+    const newMessages = [...messages, userMsg];
     setMessages(newMessages);
     setInput("");
-    sendMessage(trimmed, messages);
+    setError(null);
+    setStreaming(true);
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+    let fullContent = "";
+
+    setMessages([...newMessages, { role: "assistant", content: "" }]);
+
+    try {
+      await streamChat(
+        errorType,
+        trimmed,
+        history,
+        bulletinContext,
+        controller.signal,
+        (chunk) => {
+          fullContent += chunk;
+          const captured = fullContent;
+          setMessages([...newMessages, { role: "assistant", content: captured }]);
+        },
+      );
+    } catch (err) {
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      const errMsg = err instanceof Error ? err.message : "Erreur de connexion";
+      setError(errMsg);
+      if (!fullContent) {
+        setMessages([...newMessages, { role: "assistant", content: `Erreur : ${errMsg}` }]);
+      }
+    } finally {
+      setStreaming(false);
+    }
   };
 
   return (
@@ -161,7 +232,7 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
       {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
       )}
@@ -191,6 +262,13 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
           </button>
         </div>
 
+        {/* Error banner */}
+        {error && (
+          <div className="border-b border-border bg-white/[0.03] px-6 py-3">
+            <p className="text-xs text-red-400">{error}</p>
+          </div>
+        )}
+
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <div className="space-y-4">
@@ -204,17 +282,17 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
               >
                 <div
                   className={cn(
-                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+                    "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap",
                     msg.role === "user"
-                      ? "bg-foreground text-background"
+                      ? "bg-white text-black"
                       : "bg-surface border border-border text-foreground",
                   )}
                 >
                   {msg.content || (
                     <span className="inline-flex items-center gap-1.5 text-muted">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground/40" />
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground/40" style={{ animationDelay: "0.2s" }} />
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground/40" style={{ animationDelay: "0.4s" }} />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" style={{ animationDelay: "0.2s" }} />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" style={{ animationDelay: "0.4s" }} />
                     </span>
                   )}
                 </div>
@@ -234,12 +312,12 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
               onChange={(e) => setInput(e.target.value)}
               placeholder="Posez une question de suivi..."
               disabled={streaming}
-              className="flex-1 rounded-full border border-border bg-surface px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-foreground/30 disabled:opacity-50"
+              className="flex-1 rounded-full border border-border bg-surface px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-white/30 disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={streaming || !input.trim()}
-              className="rounded-full bg-foreground px-4 py-2.5 text-background transition-all hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+              className="rounded-full bg-white px-4 py-2.5 text-black transition-all hover:bg-white/90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
