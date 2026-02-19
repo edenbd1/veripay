@@ -6,9 +6,9 @@ interface APIEndpointProps {
 
 export function APIEndpoint({ method, path, description }: APIEndpointProps) {
   return (
-    <div className="rounded-xl bg-white/[0.04] p-4">
+    <div className="rounded-xl bg-black/[0.03] p-4">
       <div className="flex items-center gap-2">
-        <span className="rounded-full bg-white px-2.5 py-0.5 font-mono text-[10px] font-bold text-black">
+        <span className="rounded-full bg-foreground px-2.5 py-0.5 font-mono text-[10px] font-bold text-background">
           {method}
         </span>
         <code className="text-xs font-medium text-foreground">{path}</code>

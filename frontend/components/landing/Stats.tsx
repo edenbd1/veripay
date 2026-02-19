@@ -22,15 +22,9 @@ export function Stats() {
           <div className="grid gap-6 md:grid-cols-3">
             {stats.map((stat) => (
               <div key={stat.label} className="rounded-2xl border border-border bg-surface p-8">
-                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  {stat.label}
-                </p>
-                <p className="mt-2 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                  {stat.value}
-                </p>
-                <p className="mt-2 text-xs leading-relaxed text-muted">
-                  {stat.description}
-                </p>
+                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">{stat.label}</p>
+                <p className="mt-2 text-3xl font-bold tracking-tight text-foreground md:text-4xl">{stat.value}</p>
+                <p className="mt-2 text-xs leading-relaxed text-muted">{stat.description}</p>
               </div>
             ))}
           </div>

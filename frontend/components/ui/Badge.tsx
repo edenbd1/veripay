@@ -9,10 +9,10 @@ interface BadgeProps {
 }
 
 const variants: Record<BadgeVariant, string> = {
-  default: "bg-white/10 text-white/60",
-  success: "bg-white/10 text-white/80",
-  error: "bg-white text-black",
-  warning: "bg-white/15 text-white/70",
+  default: "bg-black/5 text-muted-foreground",
+  success: "bg-black/5 text-foreground",
+  error: "bg-foreground text-background",
+  warning: "bg-black/8 text-foreground/70",
 };
 
 export function Badge({ variant = "default", children, className }: BadgeProps) {

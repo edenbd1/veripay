@@ -15,7 +15,7 @@ export function StatusBanner({ variant, title, description }: StatusBannerProps)
         "flex items-start gap-3 rounded-2xl border px-5 py-4",
         isSuccess
           ? "border-border bg-surface"
-          : "border-white/10 bg-white/[0.03]"
+          : "border-border bg-black/[0.02]"
       )}
     >
       {isSuccess ? (

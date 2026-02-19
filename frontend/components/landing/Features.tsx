@@ -29,24 +29,13 @@ export function Features() {
 
         <SectionReveal stagger>
           <div className="grid gap-6 md:grid-cols-3">
-            {features.map((f, i) => (
+            {features.map((f) => (
               <div
                 key={f.title}
-                className="rounded-2xl border border-border bg-surface p-8 transition-all duration-200 hover:border-border-hover"
+                className="rounded-2xl border border-border bg-surface p-8 transition-all duration-200 hover:border-border-hover hover:shadow-sm"
               >
-                <p className="mb-3 text-sm font-bold tracking-wide text-foreground">
-                  {f.title}
-                </p>
-                <p className="text-sm leading-relaxed text-muted">
-                  {f.description}
-                </p>
-                {i < features.length - 1 && (
-                  <div className="mt-4 hidden text-muted-foreground md:hidden">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                )}
+                <p className="mb-3 text-sm font-bold tracking-wide text-foreground">{f.title}</p>
+                <p className="text-sm leading-relaxed text-muted">{f.description}</p>
               </div>
             ))}
           </div>

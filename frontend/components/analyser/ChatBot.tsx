@@ -232,7 +232,7 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
       {/* Backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
       )}
@@ -240,7 +240,7 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
       {/* Drawer */}
       <div
         className={cn(
-          "fixed right-0 top-0 z-50 flex h-full w-full max-w-lg flex-col border-l border-border bg-background shadow-2xl transition-transform duration-300 ease-out",
+          "fixed right-0 top-0 z-50 flex h-full w-full max-w-lg flex-col border-l border-border bg-background shadow-2xl shadow-black/10 transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
@@ -254,7 +254,7 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-muted transition-colors hover:bg-surface-hover hover:text-foreground"
+            className="rounded-full p-2 text-muted transition-colors hover:bg-black/5 hover:text-foreground"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -264,8 +264,8 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
 
         {/* Error banner */}
         {error && (
-          <div className="border-b border-border bg-white/[0.03] px-6 py-3">
-            <p className="text-xs text-red-400">{error}</p>
+          <div className="border-b border-border bg-red-50 px-6 py-3">
+            <p className="text-xs text-red-600">{error}</p>
           </div>
         )}
 
@@ -284,15 +284,15 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
                   className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap",
                     msg.role === "user"
-                      ? "bg-white text-black"
+                      ? "bg-foreground text-background"
                       : "bg-surface border border-border text-foreground",
                   )}
                 >
                   {msg.content || (
                     <span className="inline-flex items-center gap-1.5 text-muted">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" />
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" style={{ animationDelay: "0.2s" }} />
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white/40" style={{ animationDelay: "0.4s" }} />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground/30" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground/30" style={{ animationDelay: "0.2s" }} />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-foreground/30" style={{ animationDelay: "0.4s" }} />
                     </span>
                   )}
                 </div>
@@ -312,12 +312,12 @@ export function ChatBot({ open, onClose, errorType, bulletinContext }: ChatBotPr
               onChange={(e) => setInput(e.target.value)}
               placeholder="Posez une question de suivi..."
               disabled={streaming}
-              className="flex-1 rounded-full border border-border bg-surface px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-white/30 disabled:opacity-50"
+              className="flex-1 rounded-full border border-border bg-surface px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-foreground/20 disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={streaming || !input.trim()}
-              className="rounded-full bg-white px-4 py-2.5 text-black transition-all hover:bg-white/90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+              className="rounded-full bg-foreground px-4 py-2.5 text-background transition-all hover:bg-foreground/90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />

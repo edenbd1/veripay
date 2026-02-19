@@ -24,9 +24,9 @@ export function FileDropZone({
       className={cn(
         "relative rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200",
         dragActive
-          ? "border-white/40 bg-white/[0.03]"
+          ? "border-foreground/30 bg-black/[0.03]"
           : file
-            ? "border-white/20 bg-white/[0.02]"
+            ? "border-foreground/15 bg-black/[0.02]"
             : "border-border bg-surface hover:border-border-hover"
       )}
       onDragOver={onDragOver}
@@ -43,7 +43,7 @@ export function FileDropZone({
       />
       {file ? (
         <>
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-black/5">
             <svg className="h-6 w-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -53,7 +53,7 @@ export function FileDropZone({
         </>
       ) : (
         <>
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-black/5">
             <svg className="h-6 w-6 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>

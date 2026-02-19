@@ -3,26 +3,10 @@
 import { SectionReveal } from "@/components/ui/SectionReveal";
 
 const steps = [
-  {
-    number: "01",
-    title: "Upload",
-    description: "Glissez votre PDF de bulletin(s) de paie ou selectionnez un fichier.",
-  },
-  {
-    number: "02",
-    title: "Extraction",
-    description: "Le texte est extrait et les bulletins individuels sont identifies automatiquement.",
-  },
-  {
-    number: "03",
-    title: "Analyse",
-    description: "Les parametres (PMSS, SMIC, coeff. RGDU) sont compares aux valeurs 2026 attendues.",
-  },
-  {
-    number: "04",
-    title: "Resultats",
-    description: "Chaque bulletin recoit un statut valide/invalide avec les erreurs detaillees.",
-  },
+  { number: "01", title: "Upload", description: "Glissez votre PDF de bulletin(s) de paie ou selectionnez un fichier." },
+  { number: "02", title: "Extraction", description: "Le texte est extrait et les bulletins individuels sont identifies automatiquement." },
+  { number: "03", title: "Analyse", description: "Les parametres (PMSS, SMIC, coeff. RGDU) sont compares aux valeurs 2026 attendues." },
+  { number: "04", title: "Resultats", description: "Chaque bulletin recoit un statut valide/invalide avec les erreurs detaillees." },
 ];
 
 export function HowItWorks() {
