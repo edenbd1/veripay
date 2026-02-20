@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { SummaryCard } from "@/components/ui/SummaryCard";
 import { StatusBanner } from "@/components/ui/StatusBanner";
 import { Button } from "@/components/ui/Button";
 import { ErrorTypeSummary } from "./ErrorTypeSummary";
 import { BulletinList } from "./BulletinList";
-import { ChatBot } from "./ChatBot";
 import type { ResultatAnalyse } from "@/lib/types";
 
 interface ResultsViewProps {
@@ -26,14 +24,6 @@ export function ResultsView({
   totalInvalides,
   onReset,
 }: ResultsViewProps) {
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatErrorType, setChatErrorType] = useState("");
-
-  const handleExplainError = (errorType: string) => {
-    setChatErrorType(errorType);
-    setChatOpen(true);
-  };
-
   return (
     <div className="animate-fade-in-up">
       <div className="mb-8 flex items-start justify-between">
@@ -79,17 +69,10 @@ export function ResultsView({
       </div>
 
       {/* Error type summary */}
-      <ErrorTypeSummary bulletins={result.bulletins} onExplainError={handleExplainError} />
+      <ErrorTypeSummary bulletins={result.bulletins} />
 
       {/* Bulletin list */}
       <BulletinList bulletins={result.bulletins} />
-
-      {/* Chat drawer */}
-      <ChatBot
-        open={chatOpen}
-        onClose={() => setChatOpen(false)}
-        errorType={chatErrorType}
-      />
     </div>
   );
 }
