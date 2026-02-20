@@ -8,6 +8,7 @@ export const SAMPLE_PDFS: SamplePDF[] = [
   { name: "bulletin_4_5_sans_erreur_detaille.pdf", label: "4-5 bulletins sans erreur", hasErrors: false },
   { name: "bulletin_sans_erreur_version_detaille.pdf", label: "31 bulletins sans erreur", hasErrors: false },
   { name: "bulletin_en_erreur_version_detaille.pdf", label: "12 bulletins avec erreurs", hasErrors: true },
+  { name: "ETb_09_Tous_Jeu_Evaluation_detaille.pdf", label: "Jeu d'evaluation complet", hasErrors: true },
 ];
 
 export const ERROR_INFO: Record<string, ErrorInfoEntry> = {
